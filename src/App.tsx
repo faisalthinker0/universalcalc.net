@@ -16,6 +16,8 @@ import CalculatorPage from "./pages/calculator/[type]";
 import NotFound from "./pages/not-found";
 import PerformanceMonitor from "@/components/PerformanceMonitor";
 
+
+
 function Router() {
   return (
     <div className="min-h-screen bg-background">
