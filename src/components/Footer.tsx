@@ -17,10 +17,10 @@ export default function Footer() {
   ];
 
   const support = [
-    { href: "#help", label: "Help Center" },
-    { href: "#contact", label: "Contact Us" },
-    { href: "#privacy", label: "Privacy Policy" },
-    { href: "#terms", label: "Terms of Service" },
+    { href: "/help", label: "Help Center" },
+    { href: "/contact", label: "Contact Us" },
+    { href: "/privacy", label: "Privacy Policy" },
+    { href: "/terms", label: "Terms of Service" },
   ];
 
   return (
@@ -82,7 +82,7 @@ export default function Footer() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               {support.map((item) => (
                 <li key={item.label}>
-                  <a
+                  <Link
                     href={item.href}
                     className="hover:text-foreground transition-colors"
                     data-testid={`footer-support-${item.label
@@ -90,7 +90,7 @@ export default function Footer() {
                       .replace(/\s+/g, "-")}`}
                   >
                     {item.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

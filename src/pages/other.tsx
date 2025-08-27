@@ -2,9 +2,13 @@ import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { calculatorCategories } from "@/lib/calculatorTypes";
 import SEO from "@/components/SEO";
+import { useScrollToTop } from "@/hooks/use-scroll-to-top";
 import * as Icons from "lucide-react";
 
-export default function Other() {
+export default function OtherPage() {
+  // Scroll to top when page loads
+  useScrollToTop();
+
   const otherCategory = calculatorCategories.find((cat) => cat.id === "other");
 
   if (!otherCategory) return null;
@@ -21,21 +25,36 @@ export default function Other() {
   return (
     <>
       <SEO
-        title="Utility Calculators - Age, Date, Time & Academic Tools | UniversalCalc"
-        description="Useful utility calculators for age calculation, date operations, time calculations, GPA calculator, password generator, and unit conversions."
+        title="Other Calculators - Age, Date, Time, GPA & Utilities | UniversalCalc"
+        description="Useful utility calculators including age, date, time, GPA, password generator, and unit converter. Free and mobile-friendly."
         canonical="https://universalcalc.net/other"
-        keywords="utility calculator, age calculator, date calculator, time calculator, GPA calculator, password generator, unit converter, everyday calculators"
+        keywords="age calculator, date calculator, time calculator, GPA calculator, password generator, unit converter"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "Other Calculators",
+          description:
+            "Useful utility calculators including age, date, time, GPA, password generator, and unit converter",
+          url: "https://universalcalc.net/other",
+        }}
+        breadcrumbs={[
+          { name: "Home", url: "https://universalcalc.net" },
+          { name: "Other Calculators", url: "https://universalcalc.net/other" },
+        ]}
       />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 text-shadow">
-            Utility Calculators
-          </h1>
-          <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Essential utility tools for age calculation, date/time operations,
-            academic grading, password generation, and various everyday
-            calculations.
+          <div className="flex items-center justify-center mb-6">
+            <div className="p-4 bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl mr-4 shadow-lg">
+              <Icons.Wrench className="h-12 w-12 text-primary" />
+            </div>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white">
+              {otherCategory?.name}
+            </h1>
+          </div>
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            {otherCategory?.description}
           </p>
         </div>
 

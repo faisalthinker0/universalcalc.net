@@ -2,9 +2,13 @@ import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { calculatorCategories } from "@/lib/calculatorTypes";
 import SEO from "@/components/SEO";
+import { useScrollToTop } from "@/hooks/use-scroll-to-top";
 import * as Icons from "lucide-react";
 
-export default function Health() {
+export default function HealthPage() {
+  // Scroll to top when page loads
+  useScrollToTop();
+
   const healthCategory = calculatorCategories.find(
     (cat) => cat.id === "health"
   );
@@ -23,21 +27,36 @@ export default function Health() {
   return (
     <>
       <SEO
-        title="Health & Fitness Calculators - BMI, Calorie & Wellness Tools | UniversalCalc"
-        description="Free health calculators for BMI, calorie tracking, body fat percentage, pregnancy, and fitness planning. Professional-grade health monitoring tools."
+        title="Health & Fitness Calculators - BMI, Calories & More | UniversalCalc"
+        description="Accurate health calculators including BMI, calorie needs, BMR, body fat, and more. Free, fast, and mobile-friendly."
         canonical="https://universalcalc.net/health"
-        keywords="BMI calculator, health calculator, calorie calculator, fitness calculator, body fat calculator, pregnancy calculator, wellness tools"
+        keywords="health calculator, bmi calculator, calorie calculator, bmr calculator, body fat calculator"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "Health & Fitness Calculators",
+          description:
+            "Accurate health calculators including BMI, calorie needs, BMR, body fat, and more",
+          url: "https://universalcalc.net/health",
+        }}
+        breadcrumbs={[
+          { name: "Home", url: "https://universalcalc.net" },
+          { name: "Health & Fitness", url: "https://universalcalc.net/health" },
+        ]}
       />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 text-shadow">
-            Health & Fitness Calculators
-          </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-            Professional health monitoring tools for BMI calculation, calorie
-            tracking, body composition analysis, and comprehensive wellness
-            planning.
+          <div className="flex items-center justify-center mb-6">
+            <div className="p-4 bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl mr-4 shadow-lg">
+              <Icons.Heart className="h-12 w-12 text-primary" />
+            </div>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white">
+              {healthCategory?.name}
+            </h1>
+          </div>
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            {healthCategory?.description}
           </p>
         </div>
 

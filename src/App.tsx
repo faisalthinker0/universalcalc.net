@@ -13,10 +13,12 @@ import Health from "./pages/health";
 import Math from "./pages/math";
 import Other from "./pages/other";
 import CalculatorPage from "./pages/calculator/[type]";
+import Help from "./pages/help";
+import Contact from "./pages/contact";
+import Privacy from "./pages/privacy";
+import Terms from "./pages/terms";
 import NotFound from "./pages/not-found";
 import PerformanceMonitor from "@/components/PerformanceMonitor";
-
-
 
 function Router() {
   return (
@@ -29,6 +31,10 @@ function Router() {
         <Route path="/math" component={Math} />
         <Route path="/other" component={Other} />
         <Route path="/calculator/:type" component={CalculatorPage} />
+        <Route path="/help" component={Help} />
+        <Route path="/contact" component={Contact} />
+        <Route path="/privacy" component={Privacy} />
+        <Route path="/terms" component={Terms} />
         <Route component={NotFound} />
       </Switch>
       <Footer />

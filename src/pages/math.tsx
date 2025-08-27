@@ -2,9 +2,13 @@ import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { calculatorCategories } from "@/lib/calculatorTypes";
 import SEO from "@/components/SEO";
+import { useScrollToTop } from "@/hooks/use-scroll-to-top";
 import * as Icons from "lucide-react";
 
-export default function Math() {
+export default function MathPage() {
+  // Scroll to top when page loads
+  useScrollToTop();
+
   const mathCategory = calculatorCategories.find((cat) => cat.id === "math");
 
   if (!mathCategory) return null;
@@ -21,20 +25,36 @@ export default function Math() {
   return (
     <>
       <SEO
-        title="Math Calculators - Scientific, Geometry & Statistics Tools | UniversalCalc"
-        description="Advanced mathematical calculators including scientific calculator, fraction calculator, percentage calculator, geometry tools, and statistical calculators."
+        title="Math Calculators - Scientific, Percentage, Fractions & More | UniversalCalc"
+        description="Powerful math calculators including scientific, percentage, fraction, geometry, and statistics tools. Free and easy to use."
         canonical="https://universalcalc.net/math"
-        keywords="math calculator, scientific calculator, geometry calculator, statistics calculator, fraction calculator, percentage calculator, mathematical tools"
+        keywords="math calculator, scientific calculator, percentage calculator, fraction calculator, geometry calculator, statistics calculator"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "Math Calculators",
+          description:
+            "Powerful math calculators including scientific, percentage, fraction, geometry, and statistics tools",
+          url: "https://universalcalc.net/math",
+        }}
+        breadcrumbs={[
+          { name: "Home", url: "https://universalcalc.net" },
+          { name: "Math Calculators", url: "https://universalcalc.net/math" },
+        ]}
       />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 text-shadow">
-            Math Calculators
-          </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-            Advanced mathematical tools for scientific calculations, geometry
-            problems, statistical analysis, and comprehensive number operations.
+          <div className="flex items-center justify-center mb-6">
+            <div className="p-4 bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl mr-4 shadow-lg">
+              <Icons.Calculator className="h-12 w-12 text-primary" />
+            </div>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white">
+              {mathCategory?.name}
+            </h1>
+          </div>
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            {mathCategory?.description}
           </p>
         </div>
 

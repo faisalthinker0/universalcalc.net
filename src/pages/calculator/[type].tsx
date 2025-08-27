@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRoute } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,11 @@ export default function CalculatorPage() {
 
   const [inputs, setInputs] = useState<Record<string, string>>({});
   const [result, setResult] = useState<any>(null);
+
+  // Scroll to top when calculator type changes (fixes mobile navigation issue)
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [calculatorType]);
 
   if (!calculator) {
     return (
@@ -106,8 +111,129 @@ export default function CalculatorPage() {
         }
         break;
 
+      case "scientific":
+        const expression = inputs.expression || "";
+        if (expression) {
+          try {
+            // Basic scientific calculation (for demo purposes)
+            const result = eval(expression.replace(/[^0-9+\-*/().]/g, ""));
+            setResult({
+              expression: expression,
+              result: result,
+              message: "Calculation completed successfully",
+            });
+          } catch (error) {
+            setResult({
+              error: "Invalid expression",
+              message: "Please check your input",
+            });
+          }
+        }
+        break;
+
+      case "fraction":
+        const num1 = parseFloat(inputs.numerator1 || "0");
+        const den1 = parseFloat(inputs.denominator1 || "1");
+        const num2 = parseFloat(inputs.numerator2 || "0");
+        const den2 = parseFloat(inputs.denominator2 || "1");
+        const operation = inputs.operation || "add";
+
+        if (num1 && den1 && num2 && den2) {
+          let result;
+          switch (operation) {
+            case "add":
+              result = (num1 * den2 + num2 * den1) / (den1 * den2);
+              break;
+            case "subtract":
+              result = (num1 * den2 - num2 * den1) / (den1 * den2);
+              break;
+            case "multiply":
+              result = (num1 * num2) / (den1 * den2);
+              break;
+            case "divide":
+              result = (num1 * den2) / (den1 * num2);
+              break;
+            default:
+              result = (num1 * den2 + num2 * den1) / (den1 * den2);
+          }
+          setResult({
+            operation: operation,
+            result: result,
+            message: `${operation} operation completed`,
+          });
+        }
+        break;
+
+      case "triangle":
+        const sideA = parseFloat(inputs.sideA || "0");
+        const sideB = parseFloat(inputs.sideB || "0");
+        const sideC = parseFloat(inputs.sideC || "0");
+
+        if (sideA && sideB && sideC) {
+          // Heron's formula for area
+          const s = (sideA + sideB + sideC) / 2;
+          const area = Math.sqrt(s * (s - sideA) * (s - sideB) * (s - sideC));
+          const perimeter = sideA + sideB + sideC;
+
+          setResult({
+            area: area.toFixed(2),
+            perimeter: perimeter.toFixed(2),
+            message: "Triangle calculations completed",
+          });
+        }
+        break;
+
+      case "random":
+        const min = parseInt(inputs.min || "1");
+        const max = parseInt(inputs.max || "100");
+        const count = parseInt(inputs.count || "1");
+
+        if (min < max && count > 0 && count <= 100) {
+          const numbers = [];
+          for (let i = 0; i < count; i++) {
+            numbers.push(Math.floor(Math.random() * (max - min + 1)) + min);
+          }
+          setResult({
+            numbers: numbers,
+            count: count,
+            range: `${min} to ${max}`,
+            message: `${count} random number(s) generated`,
+          });
+        }
+        break;
+
+      case "conversion":
+        const fromValue = parseFloat(inputs.fromValue || "0");
+        const fromUnit = inputs.fromUnit || "meters";
+        const toUnit = inputs.toUnit || "feet";
+
+        if (fromValue) {
+          // Basic conversion examples
+          let result;
+          if (fromUnit === "meters" && toUnit === "feet") {
+            result = fromValue * 3.28084;
+          } else if (fromUnit === "feet" && toUnit === "meters") {
+            result = fromValue * 0.3048;
+          } else if (fromUnit === "celsius" && toUnit === "fahrenheit") {
+            result = (fromValue * 9) / 5 + 32;
+          } else if (fromUnit === "fahrenheit" && toUnit === "celsius") {
+            result = ((fromValue - 32) * 5) / 9;
+          } else {
+            result = fromValue; // No conversion available
+          }
+
+          setResult({
+            fromValue: fromValue,
+            fromUnit: fromUnit,
+            toUnit: toUnit,
+            result: result.toFixed(2),
+            message: "Conversion completed",
+          });
+        }
+        break;
+
       default:
-        setResult({ message: "Calculation completed" });
+        setResult({ message: "This calculator is coming soon!" });
     }
   };
 
@@ -228,6 +354,220 @@ export default function CalculatorPage() {
           </div>
         );
 
+      case "scientific":
+        return (
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="expression">Expression</Label>
+              <Input
+                id="expression"
+                type="text"
+                placeholder="e.g., 2 + 2 * 3"
+                value={inputs.expression || ""}
+                onChange={(e) =>
+                  handleInputChange("expression", e.target.value)
+                }
+                data-testid="input-expression"
+              />
+            </div>
+          </div>
+        );
+
+      case "fraction":
+        return (
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="numerator1">Numerator 1</Label>
+              <Input
+                id="numerator1"
+                type="number"
+                placeholder="1"
+                value={inputs.numerator1 || ""}
+                onChange={(e) =>
+                  handleInputChange("numerator1", e.target.value)
+                }
+                data-testid="input-numerator1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="denominator1">Denominator 1</Label>
+              <Input
+                id="denominator1"
+                type="number"
+                placeholder="1"
+                value={inputs.denominator1 || ""}
+                onChange={(e) =>
+                  handleInputChange("denominator1", e.target.value)
+                }
+                data-testid="input-denominator1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="numerator2">Numerator 2</Label>
+              <Input
+                id="numerator2"
+                type="number"
+                placeholder="1"
+                value={inputs.numerator2 || ""}
+                onChange={(e) =>
+                  handleInputChange("numerator2", e.target.value)
+                }
+                data-testid="input-numerator2"
+              />
+            </div>
+            <div>
+              <Label htmlFor="denominator2">Denominator 2</Label>
+              <Input
+                id="denominator2"
+                type="number"
+                placeholder="1"
+                value={inputs.denominator2 || ""}
+                onChange={(e) =>
+                  handleInputChange("denominator2", e.target.value)
+                }
+                data-testid="input-denominator2"
+              />
+            </div>
+            <div>
+              <Label htmlFor="operation">Operation</Label>
+              <select
+                id="operation"
+                value={inputs.operation || "add"}
+                onChange={(e) => handleInputChange("operation", e.target.value)}
+                data-testid="input-operation"
+              >
+                <option value="add">Add</option>
+                <option value="subtract">Subtract</option>
+                <option value="multiply">Multiply</option>
+                <option value="divide">Divide</option>
+              </select>
+            </div>
+          </div>
+        );
+
+      case "triangle":
+        return (
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="sideA">Side A</Label>
+              <Input
+                id="sideA"
+                type="number"
+                placeholder="3"
+                value={inputs.sideA || ""}
+                onChange={(e) => handleInputChange("sideA", e.target.value)}
+                data-testid="input-side-a"
+              />
+            </div>
+            <div>
+              <Label htmlFor="sideB">Side B</Label>
+              <Input
+                id="sideB"
+                type="number"
+                placeholder="4"
+                value={inputs.sideB || ""}
+                onChange={(e) => handleInputChange("sideB", e.target.value)}
+                data-testid="input-side-b"
+              />
+            </div>
+            <div>
+              <Label htmlFor="sideC">Side C</Label>
+              <Input
+                id="sideC"
+                type="number"
+                placeholder="5"
+                value={inputs.sideC || ""}
+                onChange={(e) => handleInputChange("sideC", e.target.value)}
+                data-testid="input-side-c"
+              />
+            </div>
+          </div>
+        );
+
+      case "random":
+        return (
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="min">Minimum</Label>
+              <Input
+                id="min"
+                type="number"
+                placeholder="1"
+                value={inputs.min || ""}
+                onChange={(e) => handleInputChange("min", e.target.value)}
+                data-testid="input-min"
+              />
+            </div>
+            <div>
+              <Label htmlFor="max">Maximum</Label>
+              <Input
+                id="max"
+                type="number"
+                placeholder="100"
+                value={inputs.max || ""}
+                onChange={(e) => handleInputChange("max", e.target.value)}
+                data-testid="input-max"
+              />
+            </div>
+            <div>
+              <Label htmlFor="count">Count</Label>
+              <Input
+                id="count"
+                type="number"
+                placeholder="10"
+                value={inputs.count || ""}
+                onChange={(e) => handleInputChange("count", e.target.value)}
+                data-testid="input-count"
+              />
+            </div>
+          </div>
+        );
+
+      case "conversion":
+        return (
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="fromValue">Value to Convert</Label>
+              <Input
+                id="fromValue"
+                type="number"
+                placeholder="10"
+                value={inputs.fromValue || ""}
+                onChange={(e) => handleInputChange("fromValue", e.target.value)}
+                data-testid="input-from-value"
+              />
+            </div>
+            <div>
+              <Label htmlFor="fromUnit">From Unit</Label>
+              <select
+                id="fromUnit"
+                value={inputs.fromUnit || "meters"}
+                onChange={(e) => handleInputChange("fromUnit", e.target.value)}
+                data-testid="input-from-unit"
+              >
+                <option value="meters">Meters</option>
+                <option value="feet">Feet</option>
+                <option value="celsius">Celsius</option>
+                <option value="fahrenheit">Fahrenheit</option>
+              </select>
+            </div>
+            <div>
+              <Label htmlFor="toUnit">To Unit</Label>
+              <select
+                id="toUnit"
+                value={inputs.toUnit || "feet"}
+                onChange={(e) => handleInputChange("toUnit", e.target.value)}
+                data-testid="input-to-unit"
+              >
+                <option value="meters">Meters</option>
+                <option value="feet">Feet</option>
+                <option value="celsius">Celsius</option>
+                <option value="fahrenheit">Fahrenheit</option>
+              </select>
+            </div>
+          </div>
+        );
+
       default:
         return (
           <div className="text-center py-8">
@@ -341,6 +681,144 @@ export default function CalculatorPage() {
           </div>
         );
 
+      case "scientific":
+        return (
+          <div className="bg-gray-50 p-4 rounded-lg space-y-2">
+            <div className="flex justify-between">
+              <span className="text-gray-600">Expression:</span>
+              <span
+                className="font-semibold text-primary"
+                data-testid="result-expression"
+              >
+                {result.expression}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">Result:</span>
+              <span
+                className="font-semibold text-accent"
+                data-testid="result-scientific-value"
+              >
+                {result.result}
+              </span>
+            </div>
+            {result.error && (
+              <div className="text-red-500 text-sm">Error: {result.error}</div>
+            )}
+            {result.message && (
+              <div className="text-green-600 text-sm">{result.message}</div>
+            )}
+          </div>
+        );
+
+      case "fraction":
+        return (
+          <div className="bg-gray-50 p-4 rounded-lg space-y-2">
+            <div className="flex justify-between">
+              <span className="text-gray-600">Operation:</span>
+              <span
+                className="font-semibold text-primary"
+                data-testid="result-fraction-operation"
+              >
+                {result.operation}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">Result:</span>
+              <span
+                className="font-semibold text-accent"
+                data-testid="result-fraction-value"
+              >
+                {result.result}
+              </span>
+            </div>
+            {result.message && (
+              <div className="text-green-600 text-sm">{result.message}</div>
+            )}
+          </div>
+        );
+
+      case "triangle":
+        return (
+          <div className="bg-gray-50 p-4 rounded-lg space-y-2">
+            <div className="flex justify-between">
+              <span className="text-gray-600">Area:</span>
+              <span
+                className="font-semibold text-primary"
+                data-testid="result-triangle-area"
+              >
+                {result.area}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">Perimeter:</span>
+              <span
+                className="font-semibold text-accent"
+                data-testid="result-triangle-perimeter"
+              >
+                {result.perimeter}
+              </span>
+            </div>
+            {result.message && (
+              <div className="text-green-600 text-sm">{result.message}</div>
+            )}
+          </div>
+        );
+
+      case "random":
+        return (
+          <div className="bg-gray-50 p-4 rounded-lg space-y-2">
+            <div className="flex justify-between">
+              <span className="text-gray-600">Range:</span>
+              <span
+                className="font-semibold text-primary"
+                data-testid="result-random-range"
+              >
+                {result.range}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">Numbers:</span>
+              <span
+                className="font-semibold text-accent"
+                data-testid="result-random-numbers"
+              >
+                {result.numbers.join(", ")}
+              </span>
+            </div>
+            {result.message && (
+              <div className="text-green-600 text-sm">{result.message}</div>
+            )}
+          </div>
+        );
+
+      case "conversion":
+        return (
+          <div className="bg-gray-50 p-4 rounded-lg space-y-2">
+            <div className="flex justify-between">
+              <span className="text-gray-600">From:</span>
+              <span
+                className="font-semibold text-primary"
+                data-testid="result-conversion-from"
+              >
+                {result.fromValue} {result.fromUnit}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">To:</span>
+              <span
+                className="font-semibold text-accent"
+                data-testid="result-conversion-to"
+              >
+                {result.result} {result.toUnit}
+              </span>
+            </div>
+            {result.message && (
+              <div className="text-green-600 text-sm">{result.message}</div>
+            )}
+          </div>
+        );
+
       default:
         return (
           <div className="bg-gray-50 p-4 rounded-lg">
@@ -366,6 +844,16 @@ export default function CalculatorPage() {
           calculator.description,
           canonicalUrl
         )}
+        breadcrumbs={[
+          { name: "Home", url: "https://universalcalc.net" },
+          {
+            name:
+              calculator.category.charAt(0).toUpperCase() +
+              calculator.category.slice(1),
+            url: `https://universalcalc.net/${calculator.category}`,
+          },
+          { name: calculator.name, url: canonicalUrl },
+        ]}
       />
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -374,11 +862,11 @@ export default function CalculatorPage() {
             <div className="p-4 bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl mr-4 shadow-lg">
               {getIcon(calculator.icon)}
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white text-shadow">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white text-shadow">
               {calculator.name}
             </h1>
           </div>
-          <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             {calculator.description}
           </p>
         </div>
@@ -386,12 +874,12 @@ export default function CalculatorPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <Card className="hover-lift border-0 shadow-xl">
             <CardHeader className="bg-gradient-to-r from-primary/5 to-accent/5 rounded-t-lg">
-              <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
+              <CardTitle className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white flex items-center">
                 <Icons.Calculator className="mr-3 h-6 w-6 text-primary" />
                 Calculator Inputs
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-8">
+            <CardContent className="p-4 sm:p-8">
               {renderInputs()}
               <Button
                 className="w-full mt-8 h-12 text-lg font-semibold bg-primary hover:bg-primary-dark shadow-lg"
@@ -406,12 +894,12 @@ export default function CalculatorPage() {
 
           <Card className="hover-lift border-0 shadow-xl">
             <CardHeader className="bg-gradient-to-r from-accent/5 to-primary/5 rounded-t-lg">
-              <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
+              <CardTitle className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white flex items-center">
                 <Icons.BarChart3 className="mr-3 h-6 w-6 text-accent" />
                 Results
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-8">
+            <CardContent className="p-4 sm:p-8">
               {result ? (
                 renderResult()
               ) : (

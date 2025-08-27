@@ -2,9 +2,13 @@ import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { calculatorCategories } from "@/lib/calculatorTypes";
 import SEO from "@/components/SEO";
+import { useScrollToTop } from "@/hooks/use-scroll-to-top";
 import * as Icons from "lucide-react";
 
-export default function Financial() {
+export default function FinancialPage() {
+  // Scroll to top when page loads
+  useScrollToTop();
+
   const financialCategory = calculatorCategories.find(
     (cat) => cat.id === "financial"
   );
@@ -27,17 +31,35 @@ export default function Financial() {
         description="Professional financial calculators for mortgage payments, loan calculations, investment planning, and retirement savings. Free, accurate, and easy to use."
         canonical="https://universalcalc.net/financial"
         keywords="financial calculator, mortgage calculator, loan calculator, investment calculator, retirement calculator, financial planning tools"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "Financial Calculators",
+          description:
+            "Professional financial calculators for mortgage payments, loan calculations, investment planning, and retirement savings",
+          url: "https://universalcalc.net/financial",
+        }}
+        breadcrumbs={[
+          { name: "Home", url: "https://universalcalc.net" },
+          {
+            name: "Financial Calculators",
+            url: "https://universalcalc.net/financial",
+          },
+        ]}
       />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 text-shadow">
-            Financial Calculators
-          </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-            Professional-grade financial planning tools for mortgages, loans,
-            investments, and retirement planning. Make informed financial
-            decisions with our comprehensive calculators.
+          <div className="flex items-center justify-center mb-6">
+            <div className="p-4 bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl mr-4 shadow-lg">
+              <Icons.Banknote className="h-12 w-12 text-primary" />
+            </div>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white">
+              {financialCategory?.name}
+            </h1>
+          </div>
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            {financialCategory?.description}
           </p>
         </div>
 

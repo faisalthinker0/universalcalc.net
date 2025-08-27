@@ -6,10 +6,14 @@ import { Input } from "@/components/ui/input";
 import { featuredCalculators } from "@/lib/calculatorTypes";
 import Calculator from "@/components/Calculator";
 import SEO from "@/components/SEO";
+import { useScrollToTop } from "@/hooks/use-scroll-to-top";
 import * as Icons from "lucide-react";
 
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Scroll to top when page loads
+  useScrollToTop();
 
   const getIcon = (iconName: string) => {
     const IconComponent = Icons[iconName as keyof typeof Icons] as any;
@@ -29,15 +33,33 @@ export default function HomePage() {
       <SEO
         title="Free Online Calculator - Math, Financial, Health Tools"
         description="Use our free online calculators for math, finance, health, and more. Scientific calculator, mortgage calculator, BMI calculator and dozens more."
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "UniversalCalc",
+          description:
+            "Free online calculators for math, finance, health, and more",
+          url: "https://universalcalc.net",
+          potentialAction: {
+            "@type": "SearchAction",
+            target: {
+              "@type": "EntryPoint",
+              urlTemplate:
+                "https://universalcalc.net/?search={search_term_string}",
+            },
+            "query-input": "required name=search_term_string",
+          },
+        }}
+        breadcrumbs={[{ name: "Home", url: "https://universalcalc.net" }]}
       />
 
       {/* Hero Section */}
       <section className="py-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-5xl font-bold text-foreground mb-6">
+          <h1 className="text-4xl sm:text-5xl font-bold text-foreground mb-6">
             Free Calculator
           </h1>
-          <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
+          <p className="text-lg sm:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
             Simple, fast, and reliable calculators for all your needs
           </p>
 
@@ -65,7 +87,7 @@ export default function HomePage() {
       {/* Featured Calculators */}
       <section className="py-16 bg-card">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl font-bold text-foreground text-center mb-12">
+          <h2 className="text-2xl sm:text-3xl font-bold text-foreground text-center mb-12">
             Popular Tools
           </h2>
 
